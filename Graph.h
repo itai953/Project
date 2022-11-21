@@ -1,25 +1,28 @@
 #ifndef GRAPH_H
 #define GRAPH_H
-#include <unordered_map>
-#include <unordered_set>
+#include <algorithm>
+#include <vector>
 
-typedef std::unordered_set<int> vertex_set;
-typedef std::unordered_map<int,vertex_set> adj_list;
-
+using std::vector;
 class Graph
 {
 private:
-    int g,n;
-    adj_list list;
+    enum{MAX_DEGREE = 3};
+    vector<vector<int>> _g;
 public:
-    Graph(int g):g(g),n(4),list{} {}
-    vertex_set* get_neighbors(int v);
-    const adj_list& get_adjacency_list() const {return list;}
-    void insert_edge(int u, int v);
+    /* builds k4-edge */
+    Graph();
+
+    const vector<int>& get_neighbors(int v) const;
+    const vector<vector<int>>& get_graph() const {return _g;}
+    bool insert_edge(int u, int v);
     void remove_edge(int u, int v);
     bool is_neighbor(int u, int v);
-    void add_vertex(int v);
+    int add_vertex();
     int get_degree(int v);
+    void distance_from(int v, int dist[]) const;
+    int shortest_cycle(int u, int v);
+    int size() const  {return _g.size();}
 };
 
 
