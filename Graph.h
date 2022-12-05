@@ -2,7 +2,8 @@
 #define GRAPH_H
 #include <algorithm>
 #include <vector>
-
+#include <iostream>
+using namespace std;
 using std::vector;
 class Graph
 {
@@ -23,7 +24,8 @@ public:
     void distance_from(int v, int dist[]) const;
     int shortest_cycle(int u, int v);
     int size() const  {return _g.size();}
+    void print(ostream& out) const;
 };
 
-
+ostream& operator<<(ostream& out, const Graph& G);
 #endif

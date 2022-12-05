@@ -21,6 +21,7 @@ bool Graph::insert_edge(int u, int v)
     if(_g[u].size() >= MAX_DEGREE || _g[v].size() >= MAX_DEGREE) return false;
     _g[u].push_back(v);
     _g[v].push_back(u);
+    return true;
 }
 
 
@@ -35,6 +36,7 @@ bool Graph::is_neighbor(int u, int v)
             return true;
         }
     }
+    return false;
 }
 
 
@@ -54,7 +56,7 @@ int Graph::get_degree(int v)
 void Graph::remove_edge(int u, int v)
 {
    if(!is_neighbor(u,v)) return;
-   auto it_v = std::find(_g[u].begin(), _g[v].end(),v);
+   auto it_v = std::find(_g[u].begin(), _g[u].end(),v);
    _g[u].erase(it_v);
    auto it_u = std::find(_g[v].begin(), _g[v].end(), u);
    _g[v].erase(it_u);
@@ -85,4 +87,24 @@ int Graph::shortest_cycle(int u, int v) {
     distance_from(v, dist_v);
     insert_edge(u,v);
     return dist_v[u]+1;
+}
+
+void Graph::print(ostream& out) const
+{
+    for(int i=0; i < size(); i++ )
+    {
+        out << i << ": ";
+        for(int v : _g[i])
+        {
+            out << v << " ";
+        }
+        out << "\n";
+    }
+}
+
+
+ostream& operator<<(ostream& out, const Graph& G)
+{
+    G.print(out);
+    return out;
 }
