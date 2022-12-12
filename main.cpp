@@ -9,7 +9,8 @@ int main(int argc, char** argv)
     sscanf(argv[2],"%d",&max_n);
     sscanf(argv[3],"%d",&num_iterations);
     GD(g, max_n, result);
-
+    
+    //start looping
     for(int i = 0; i < num_iterations; i++ )
     {
         GD(g, max_n, temp);
