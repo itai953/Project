@@ -4,6 +4,7 @@
 #include <fstream>
 #include "Algorithms.h"
 using namespace std;
+//check
 
 void writeData(vector<vector<int> > &walks, int edges, int g, const string &filePath);
 

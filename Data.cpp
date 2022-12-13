@@ -1,5 +1,5 @@
 #include "Data.h"
-
+//check
 void calclAverage(vector<vector<int> > &walks, vector<int> &avg, int edges, int g) {
     for (auto &walk : walks) {
         for (int i = 0; i < g; ++i) {
