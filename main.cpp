@@ -8,12 +8,12 @@ int main(int argc, char** argv)
     sscanf(argv[1],"%d",&g);
     sscanf(argv[2],"%d",&max_n);
     sscanf(argv[3],"%d",&num_iterations);
-    GD(g, max_n, result);
+    GF(max_n, g, result);
     
     //start looping
     for(int i = 0; i < num_iterations; i++ )
     {
-        GD(g, max_n, temp);
+        GF(max_n, g, temp);
         if (temp.size() < result.size())
         {
             result = temp;
