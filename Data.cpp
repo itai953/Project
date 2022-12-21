@@ -1,6 +1,6 @@
 #include "Data.h"
 //check
-void calclAverage(vector<vector<int> > &walks, vector<int> &avg, int edges, int g) {
+void calclAverage(vector<vector<int> > &walks, vector<int> &avg, int edges, int g, int n) {
     for (auto &walk : walks) {
         for (int i = 0; i < g; ++i) {
             avg[i] += walk[i];
@@ -11,18 +11,19 @@ void calclAverage(vector<vector<int> > &walks, vector<int> &avg, int edges, int 
     }
 }
 
-void writeData(vector<vector<int> > &walks, int edges, int g, const string &filePath) {
+void writeData(vector<vector<int> > &walks, int edges, int g, const string &filePath, int n) {
     std::ofstream dataFile(filePath + ".txt");
     std::vector<int> avg(g - 1);
     std::vector<int> maxWalk = walks[0];
     // calculate average for each c(i) of the edges
-    calclAverage(walks, avg, edges, g);
+    calclAverage(walks, avg, edges, g, n);
     // getting max vector by lexicography order
     for (int i = 1; i < edges; ++i) {
         if (std::lexicographical_compare(begin(maxWalk), end(maxWalk), begin(walks[i]), end(walks[i]))) {
             maxWalk = walks[i];
         }
     }
+    dataFile << n << "\n";
     for (int i = 0; i < g - 1; ++i) {
         dataFile << avg[i] << " ";
     }
