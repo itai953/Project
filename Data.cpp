@@ -1,19 +1,19 @@
 #include "Data.h"
 //check
-void calclAverage(vector<vector<int> > &walks, vector<int> &avg, int edges, int g, int n) {
+void calclAverage(vector<vector<int> > &walks, vector<double> &avg, int edges, int g, int n) {
     for (auto &walk : walks) {
         for (int i = 0; i < g; ++i) {
             avg[i] += walk[i];
         }
     }
-    for (int &sum: avg) {
+    for (auto &sum: avg) {
         sum /= edges;
     }
 }
 
-void writeData(vector<vector<int> > &walks, int edges, int g, const string &filePath, int n) {
-    std::ofstream dataFile(filePath + ".txt");
-    std::vector<int> avg(g - 1);
+void writeData(vector<vector<int> > &walks, int edges, int g, ofstream &dataFile, int n) {
+    // std::ofstream dataFile(filePath + ".txt");
+    std::vector<double> avg(g);
     std::vector<int> maxWalk = walks[0];
     // calculate average for each c(i) of the edges
     calclAverage(walks, avg, edges, g, n);
@@ -24,12 +24,13 @@ void writeData(vector<vector<int> > &walks, int edges, int g, const string &file
         }
     }
     dataFile << n << "\n";
-    for (int i = 0; i < g - 1; ++i) {
+    for (int i = 0; i < g; ++i) {
         dataFile << avg[i] << " ";
     }
     dataFile << "\n";
-    for (int i = 0; i < g - 1; ++i) {
+    for (int i = 0; i < g; ++i) {
         dataFile << maxWalk[i] << " ";
     }
-    dataFile.close();
+    dataFile << "\n";
+    // dataFile.close();
 }

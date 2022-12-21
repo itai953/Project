@@ -90,7 +90,7 @@ inline int walks_compare(const int tot_walks[], const int best_tot_walks[], int 
 }
 
 
-vector<Edge> find_max_walks_edges(const Graph &G, int max_walks[], int g)
+vector<Edge> find_max_walks_edges(const Graph &G, int max_walks[], int g, vector<vector<int>>& walks_vec)
 {
     vector<Edge> max_walks_edges;
     int n = G.size();
@@ -101,6 +101,7 @@ vector<Edge> find_max_walks_edges(const Graph &G, int max_walks[], int g)
         {
             int walks[g];
             G.num_closed_nb_walks(v_odd, v_even, g - 1, walks);
+            walks_vec.push_back(vector<int>(walks, walks+g));
             int cmp = walks_compare(walks, max_walks, g);
             if (cmp >= 0)
             {
@@ -114,6 +115,7 @@ vector<Edge> find_max_walks_edges(const Graph &G, int max_walks[], int g)
             }
         }
     }
+
     return max_walks_edges;
 }
 
@@ -176,14 +178,19 @@ int GrowF_find_f_cadidates(const Graph &G, const Edge &e, int g,
 }
 
 
-bool GF(int max_n, int g, Graph& result)
+bool GF(int max_n, int g, Graph& result, ofstream& log)
 {
     Graph G; //construct k4m;
     int n = G.size();
     while(n <= max_n)
     {
+        vector<vector<int>> walks_vec;
         int max_walks[g];
-        vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g);
+        vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
+        if((n % 12) == 4)
+        {
+            writeData(walks_vec, walks_vec.size(), g, log, n);
+        }
         int s = shortest_walk(max_walks, g);
         if (s == g)
         {

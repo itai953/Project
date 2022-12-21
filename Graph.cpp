@@ -135,14 +135,13 @@ void Graph::num_nb_paths_step(const SparseCounter& cur,
 			      SparseCounter& next) const {
     int n = size();
     next.clear();
-    for(int i = 0; i < cur.size(); i++) {
-        int count = cur[i];
-        int x = i / MAX_DEGREE;
-        int y = get_neighbors(x)[i % MAX_DEGREE];
-        for(int z : get_neighbors(y))
-            if (x!=z)
-                next.inc(y*MAX_DEGREE+edge_index(y,z), count);
-    }
+     for(const auto [edge,count] : cur) {
+        int x = edge / MAX_DEGREE;
+        int y = get_neighbors(x)[edge % MAX_DEGREE];
+        for(int z : get_neighbors(x))
+            if (y!=z)
+                next.inc(z*MAX_DEGREE+edge_index(z,x), count);
+     }
 }
 
 
@@ -152,21 +151,20 @@ void Graph::num_nb_paths_back_step(const SparseCounter& cur,
 			      SparseCounter& next) const {
     int n = size();
     next.clear();
-    for(int i = 0; i < cur.size(); i++) {
-        int count = cur[i];
-        int x = i / MAX_DEGREE;
-        int y = get_neighbors(x)[i % MAX_DEGREE];
-        for(int z : get_neighbors(x))
-            if (y!=z)
-                next.inc(y*MAX_DEGREE+edge_index(z,x), count);
+    for(const auto [edge,count] : cur) {
+        int x = edge / MAX_DEGREE;
+        int y = get_neighbors(x)[edge % MAX_DEGREE];
+        for(int z : get_neighbors(y))
+            if (x!=z)
+                next.inc(y*MAX_DEGREE+edge_index(y,z), count);
     }
 }
 
 int nb_paths_dot(const SparseCounter& c1, SparseCounter& c2)
 {
     int acc = 0;
-    for(int i=0; i < c1.size(); i++)
-        acc += c1[i]*c2[i];
+    for(const auto [edge,count] : c1)
+        acc += count * c2[edge];
     return acc;
 }
 

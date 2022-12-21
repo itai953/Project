@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include "SparseCounter.h"
+#include "Data.h"
 
 
 using namespace std;
