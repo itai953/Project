@@ -3,3 +3,4 @@
 *.o
 Shlomo/
 results/
+venv/
