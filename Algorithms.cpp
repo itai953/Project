@@ -182,12 +182,14 @@ bool GF(int max_n, int g, Graph& result, ofstream& log)
 {
     Graph G; //construct k4m;
     int n = G.size();
+    int log_interval = 12;
     while(n <= max_n)
     {
         vector<vector<int>> walks_vec;
         int max_walks[g];
         vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
-        if((n % 12) == 4)
+        log_interval = (n/log_interval >= 10) ? log_interval*2 : log_interval;
+        if((n % log_interval) == 4)
         {
             writeData(walks_vec, walks_vec.size(), g, log, n);
         }
@@ -195,6 +197,8 @@ bool GF(int max_n, int g, Graph& result, ofstream& log)
         if (s == g)
         {
             result = G;
+            if((n%log_interval) != 4)
+                writeData(walks_vec, walks_vec.size(), g, log, n);
             return true;
         }
         Edge e = max_walks_edges[rand() % max_walks_edges.size()];
