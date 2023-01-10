@@ -1,9 +1,26 @@
 #include "Algorithms.h"
-#include <stdio.h>
+#include "Validator.h"
+
 #include <sstream>
+#include <iterator>
+
+
 
 int main(int argc, char** argv)
 {
+    
+    vector<string> args(argv, argv+argc);
+    auto arg_iter = find(args.begin(), args.end(), "--validate");
+    if (arg_iter != args.end())
+    {
+        bool status = true;
+        status = validator_main(args);
+        if(!status)
+        {
+            exit(1);
+        }
+        return 0;
+    }
     Graph result,temp;
     int g, max_n,num_iterations;
     sscanf(argv[1],"%d",&g);
@@ -29,7 +46,7 @@ int main(int argc, char** argv)
         log_file.close();
     }
     ofstream output(PATH + "_result.txt");
-    output << "result graph:\n";
+    // output << "result graph:\n";
     output << result;
     output.close();
     return 0;

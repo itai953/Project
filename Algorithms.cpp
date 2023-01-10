@@ -214,3 +214,4 @@ bool GF(int max_n, int g, Graph& result, ofstream& log)
     }
     return false;
 }
+
