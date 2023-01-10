@@ -3,6 +3,7 @@
 #include "Graph.h"
 #include <random>
 #include <algorithm>
+#include <climits>
 
 using std::min;
 typedef std::pair<int, int> Edge;
@@ -12,5 +13,6 @@ int add_two_mid(Graph& G, Edge& e);
 Edge random_furthest_edge(const Graph &G, int v, const vector<Edge> &candidate_edges);
 bool GD(int g, int max_n, Graph &res);
 bool GF(int max_n, int g, Graph& result, ofstream& log);
+
 
 #endif
