@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     sscanf(argv[2],"%d",&max_n);
     sscanf(argv[3],"%d",&num_iterations);
     string PATH = string(argv[4]);
-    
+    srand(0); // add seed 0
     ofstream log_file(PATH+ "_0.log");
     GF(max_n, g, result,log_file);
     log_file.close();
@@ -35,6 +35,7 @@ int main(int argc, char** argv)
     //start looping
     for(int i = 1; i < num_iterations; i++ )
     {
+        srand(i); //add seed
         stringstream ss;
         ss <<"_" << i << ".log";
         ofstream log_file(PATH + ss.str());
