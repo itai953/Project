@@ -1,6 +1,5 @@
 #ifndef GRAPH_H
 #define GRAPH_H
-#include <algorithm>
 #include <vector>
 #include <iostream>
 #include "SparseCounter.h"

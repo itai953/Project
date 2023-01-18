@@ -177,14 +177,66 @@ int GrowF_find_f_cadidates(const Graph &G, const Edge &e, int g,
     return max_dist;
 }
 
-
-bool GF(int max_n, int g, Graph& result, ofstream& log)
+bool GF_from_checkpoint(int max_n, int g, Graph& result, ofstream& log)
 {
-    Graph G; //construct k4m;
+    Graph G = result;
     int n = G.size();
-    int log_interval = 12;
+    
     while(n <= max_n)
     {
+        vector<vector<int>> walks_vec;
+        int max_walks[g];
+        vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
+        int s = shortest_walk(max_walks, g);
+        if (s == g)
+        {
+            result = G;
+            log << "GF FROM CHECK POINT SUCCESS, n =" << n << "\n";
+            return true;
+        }
+        writeDataFromCheckPoint(walks_vec,walks_vec.size(),g,log,n);
+        Edge e = max_walks_edges[rand() % max_walks_edges.size()];
+        vector<Edge> f_candidates;
+        int max_D = GrowF_find_f_cadidates(G, e, g, f_candidates);
+        int max_walks2[g];
+        f_candidates = find_edges_with_max_walks(G, max_walks2, g, f_candidates);
+        auto f = f_candidates[rand() % f_candidates.size()];
+        int mid_e = add_two_mid(G, e);
+        int mid_f = add_two_mid(G, f);
+        G.insert_edge(mid_e, mid_f);
+        n = G.size();
+    }
+    log << "GF FROM CHECK POINT FAILED\n";
+    return false;
+}
+
+bool GF(int max_n, int g, Graph& result, ofstream& log, ofstream& log_check, int checkpoint)
+{
+    Graph G,min_G; //construct k4m;
+    int n = G.size();
+    int log_interval = 24;
+    bool status = true;
+    while(n <= max_n)
+    {
+        if(n == checkpoint)
+        {
+            min_G = G;
+            for(int i=1; i <= 20; i++)
+            {
+                log_check << "run #" << i << " from checkpoint\n";
+                log_check << "---------------------------------------\n";
+                status = GF_from_checkpoint(max_n,g,G,log_check);
+                log_check << "---------------------------------------\n";
+                if(status)
+                {
+                    if(min_G.size() > G.size())
+                    {
+                        min_G = G;
+                    }
+                }
+            }
+            break;
+        }
         vector<vector<int>> walks_vec;
         int max_walks[g];
         vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
@@ -197,8 +249,7 @@ bool GF(int max_n, int g, Graph& result, ofstream& log)
         if (s == g)
         {
             result = G;
-            if((n%log_interval) != 4)
-                writeData(walks_vec, walks_vec.size(), g, log, n);
+            log << "GF SUCCESS, n =" << n << "\n"; 
             return true;
         }
         Edge e = max_walks_edges[rand() % max_walks_edges.size()];
@@ -212,6 +263,8 @@ bool GF(int max_n, int g, Graph& result, ofstream& log)
         G.insert_edge(mid_e, mid_f);
         n = G.size();
     }
-    return false;
+
+    if(!status) log << "GF FAILED\n";
+    return status;
 }
 

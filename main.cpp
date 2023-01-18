@@ -22,16 +22,19 @@ int main(int argc, char** argv)
         return 0;
     }
     Graph result,temp;
-    int g, max_n,num_iterations;
+    int g, max_n,num_iterations,checkpoint;
     sscanf(argv[1],"%d",&g);
     sscanf(argv[2],"%d",&max_n);
     sscanf(argv[3],"%d",&num_iterations);
-    string PATH = string(argv[4]);
+    sscanf(argv[4],"%d",&checkpoint);
+    string PATH = string(argv[5]);
     srand(0); // add seed 0
     ofstream log_file(PATH+ "_0.log");
-    GF(max_n, g, result,log_file);
+    ofstream log_from_checkpoint(PATH+"_check_0.log");
+    bool status = true;
+    status = GF(max_n, g, result,log_file,log_from_checkpoint,checkpoint);
     log_file.close();
-
+    log_from_checkpoint.close();
     //start looping
     for(int i = 1; i < num_iterations; i++ )
     {
@@ -39,16 +42,21 @@ int main(int argc, char** argv)
         stringstream ss;
         ss <<"_" << i << ".log";
         ofstream log_file(PATH + ss.str());
-        GF(max_n, g, temp,log_file);
+        ofstream log_from_checkpoint(PATH+"_check" + ss.str());
+        status = GF(max_n, g, temp,log_file,log_from_checkpoint,checkpoint);
         if (temp.size() < result.size())
         {
             result = temp;
         }
         log_file.close();
+        log_from_checkpoint.close();
     }
-    ofstream output(PATH + "_result.txt");
-    // output << "result graph:\n";
-    output << result;
-    output.close();
+    if(status)
+    {
+        ofstream output(PATH + "_result.txt");
+        // output << "result graph:\n";
+        output << result;
+        output.close();
+    }
     return 0;
 }
