@@ -194,7 +194,7 @@ bool GF_from_checkpoint(int max_n, int g, Graph& result, ofstream& log)
             log << "GF FROM CHECK POINT SUCCESS, n =" << n << "\n";
             return true;
         }
-        writeDataFromCheckPoint(walks_vec,walks_vec.size(),g,log,n);
+        writeData(walks_vec,walks_vec.size(),g,log,n);
         Edge e = max_walks_edges[rand() % max_walks_edges.size()];
         vector<Edge> f_candidates;
         int max_D = GrowF_find_f_cadidates(G, e, g, f_candidates);
@@ -221,12 +221,11 @@ bool GF(int max_n, int g, Graph& result, ofstream& log, ofstream& log_check, int
         if(n == checkpoint)
         {
             min_G = G;
-            for(int i=1; i <= 20; i++)
+            for(int i=0; i < 20; i++)
             {
-                log_check << "run #" << i << " from checkpoint\n";
-                log_check << "---------------------------------------\n";
+                if (i != 0)
+                    log_check << "@@\n";
                 status = GF_from_checkpoint(max_n,g,G,log_check);
-                log_check << "---------------------------------------\n";
                 if(status)
                 {
                     if(min_G.size() > G.size())
