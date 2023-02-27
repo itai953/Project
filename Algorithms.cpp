@@ -1,5 +1,5 @@
 #include "Algorithms.h"
-
+#include <cmath>
 using std::min;
 
 typedef std::pair<int, int> Edge;
@@ -209,6 +209,81 @@ bool GF_from_checkpoint(int max_n, int g, Graph& result, ofstream& log)
     log << "GF FROM CHECK POINT FAILED\n";
     return false;
 }
+vector<int> calc_next_step(int max_n,int g,Graph& G){
+    vector<vector<int>> walks_vec;
+    int max_walks[g];
+    vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
+    double func_res = 0;
+    vector<int>& maxWalk = walks_vec[0];
+    for (int i = 1; i < walks_vec.size(); ++i) {
+        if (std::lexicographical_compare(begin(maxWalk), end(maxWalk), begin(walks_vec[i]), end(walks_vec[i]))) {
+            maxWalk = walks_vec[i];
+        }
+    }
+    
+    return maxWalk;
+}
+bool climb_G_from_checkpoint(int max_n,int g,Graph& G,ofstream& log_check){
+    int n = G.size();
+    while (n <= max_n)
+    {
+        vector<vector<int>> walks_vec;
+        int max_walks[g];
+        vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
+        double func_res = 0;
+        vector<int>& maxWalk = walks_vec[0];
+        for (int i = 1; i < walks_vec.size(); ++i) 
+        {
+            if (std::lexicographical_compare(begin(maxWalk), end(maxWalk), begin(walks_vec[i]), end(walks_vec[i]))) 
+            {
+                maxWalk = walks_vec[i];
+            }
+        }
+        Edge e;
+        vector<Edge> f_candidates;
+        int max_walks2[g];
+        writeData(walks_vec, walks_vec.size(), g, log_check, n);
+        int s = shortest_walk(max_walks, g);
+        if (s == g)
+        {
+            log_check << "GF SUCCESS, n =" << n << "\n"; 
+            return true;
+        }
+        vector<pair<Edge,Edge> > e_f_candidates(10);
+        for (int i = 0; i < 10; i++)
+        {
+            Edge e = max_walks_edges[rand() % max_walks_edges.size()];
+            int max_D = GrowF_find_f_cadidates(G, e, g, f_candidates);
+            f_candidates = find_edges_with_max_walks(G, max_walks2, g, f_candidates);
+            auto f = f_candidates[rand() % f_candidates.size()];
+            e_f_candidates[i] = pair<Edge,Edge>(e,f);
+        }
+        vector<int> min_vect(g,1000);
+        pair<Edge,Edge> min_e_f;
+        for(auto& cand: e_f_candidates){
+            auto G_copy = G;
+            int mid_e = add_two_mid(G_copy, cand.first);
+            int mid_f = add_two_mid(G_copy, cand.second);
+            G_copy.insert_edge(mid_e, mid_f);
+            n = G_copy.size();
+            vector<int> tmp_vect = calc_next_step(n,g,G_copy);
+            //cout << tmp_res << " above\n";
+            if (std::lexicographical_compare(begin(tmp_vect), end(tmp_vect), begin(min_vect), end(min_vect))) 
+            {
+                min_vect = tmp_vect;
+                min_e_f = cand;
+                G = G_copy;
+                if(std::lexicographical_compare(begin(tmp_vect), end(tmp_vect), begin(maxWalk), end(maxWalk)))
+                {
+                    break;     
+                }
+            }
+        }
+        
+        
+    }
+    return false;  
+}
 
 bool GF(int max_n, int g, Graph& result, ofstream& log, ofstream& log_check, int checkpoint)
 {
@@ -221,19 +296,20 @@ bool GF(int max_n, int g, Graph& result, ofstream& log, ofstream& log_check, int
         if(n == checkpoint)
         {
             min_G = G;
-            for(int i=0; i < 20; i++)
-            {
-                if (i != 0)
-                    log_check << "@@\n";
-                status = GF_from_checkpoint(max_n,g,G,log_check);
-                if(status)
-                {
-                    if(min_G.size() > G.size())
-                    {
-                        min_G = G;
-                    }
-                }
-            }
+            climb_G_from_checkpoint(max_n,g,G,log_check);
+            // for(int i=0; i < 20; i++)
+            // {
+            //     if (i != 0)
+            //         log_check << "@@\n";
+            //     status = GF_from_checkpoint(max_n,g,G,log_check);
+            //     if(status)
+            //     {
+            //         if(min_G.size() > G.size())
+            //         {
+            //             min_G = G;
+            //         }
+            //     }
+            // }
             break;
         }
         vector<vector<int>> walks_vec;
