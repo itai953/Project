@@ -209,7 +209,7 @@ bool GF_from_checkpoint(int max_n, int g, Graph& result, ofstream& log)
     log << "GF FROM CHECK POINT FAILED\n";
     return false;
 }
-vector<int> calc_next_step(int max_n,int g,Graph& G){
+vector<int> calc_max_c_vect(int g,Graph& G){
     vector<vector<int>> walks_vec;
     int max_walks[g];
     vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
@@ -266,7 +266,7 @@ bool climb_G_from_checkpoint(int max_n,int g,Graph& G,ofstream& log_check){
             int mid_f = add_two_mid(G_copy, cand.second);
             G_copy.insert_edge(mid_e, mid_f);
             n = G_copy.size();
-            vector<int> tmp_vect = calc_next_step(n,g,G_copy);
+            vector<int> tmp_vect = calc_max_c_vect(g,G_copy);
             //cout << tmp_res << " above\n";
             if (std::lexicographical_compare(begin(tmp_vect), end(tmp_vect), begin(min_vect), end(min_vect))) 
             {
