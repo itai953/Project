@@ -30,11 +30,10 @@ int main(int argc, char** argv)
     string PATH = string(argv[5]);
     srand(0); // add seed 0
     ofstream log_file(PATH+ "_0.log");
-    ofstream log_from_checkpoint(PATH+"_check_0.log");
+    // ofstream log_from_checkpoint(PATH+"_check_0.log");
     bool status = true;
-    status = GF(max_n, g, result,log_file,log_from_checkpoint,checkpoint);
+    status = GF(max_n, g, result,log_file,checkpoint);
     log_file.close();
-    log_from_checkpoint.close();
     //start looping
     for(int i = 1; i < num_iterations; i++ )
     {
@@ -43,13 +42,12 @@ int main(int argc, char** argv)
         ss <<"_" << i << ".log";
         ofstream log_file(PATH + ss.str());
         ofstream log_from_checkpoint(PATH+"_check" + ss.str());
-        status = GF(max_n, g, temp,log_file,log_from_checkpoint,checkpoint);
+        status = GF(max_n, g, temp,log_file,checkpoint);
         if (temp.size() < result.size())
         {
             result = temp;
         }
         log_file.close();
-        log_from_checkpoint.close();
     }
     if(status)
     {

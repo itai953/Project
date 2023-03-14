@@ -241,7 +241,6 @@ bool climb_G_from_checkpoint(int max_n,int g,Graph& G,ofstream& log_check){
         }
         Edge e;
         vector<Edge> f_candidates;
-        int max_walks2[g];
         writeData(walks_vec, walks_vec.size(), g, log_check, n);
         int s = shortest_walk(max_walks, g);
         if (s == g)
@@ -254,10 +253,12 @@ bool climb_G_from_checkpoint(int max_n,int g,Graph& G,ofstream& log_check){
         {
             Edge e = max_walks_edges[rand() % max_walks_edges.size()];
             int max_D = GrowF_find_f_cadidates(G, e, g, f_candidates);
+            int max_walks2[g];
             f_candidates = find_edges_with_max_walks(G, max_walks2, g, f_candidates);
             auto f = f_candidates[rand() % f_candidates.size()];
             e_f_candidates[i] = pair<Edge,Edge>(e,f);
         }
+        auto G_min = G;
         vector<int> min_vect(g,1000);
         pair<Edge,Edge> min_e_f;
         for(auto& cand: e_f_candidates){
@@ -272,22 +273,22 @@ bool climb_G_from_checkpoint(int max_n,int g,Graph& G,ofstream& log_check){
             {
                 min_vect = tmp_vect;
                 min_e_f = cand;
-                G = G_copy;
+                G_min = G_copy;
                 if(std::lexicographical_compare(begin(tmp_vect), end(tmp_vect), begin(maxWalk), end(maxWalk)))
                 {
-                    break;     
+                    break;
                 }
             }
         }
-        
+        G = G_min;
         
     }
     return false;  
 }
 
-bool GF(int max_n, int g, Graph& result, ofstream& log, ofstream& log_check, int checkpoint)
+bool GF(int max_n, int g, Graph& result, ofstream& log, int checkpoint)
 {
-    Graph G,min_G; //construct k4m;
+    Graph G; //construct k4m;
     int n = G.size();
     int log_interval = 24;
     bool status = true;
@@ -295,21 +296,9 @@ bool GF(int max_n, int g, Graph& result, ofstream& log, ofstream& log_check, int
     {
         if(n == checkpoint)
         {
-            min_G = G;
-            climb_G_from_checkpoint(max_n,g,G,log_check);
-            // for(int i=0; i < 20; i++)
-            // {
-            //     if (i != 0)
-            //         log_check << "@@\n";
-            //     status = GF_from_checkpoint(max_n,g,G,log_check);
-            //     if(status)
-            //     {
-            //         if(min_G.size() > G.size())
-            //         {
-            //             min_G = G;
-            //         }
-            //     }
-            // }
+            status = climb_G_from_checkpoint(max_n,g,G,log);
+            if (status)
+                result = G;
             break;
         }
         vector<vector<int>> walks_vec;
