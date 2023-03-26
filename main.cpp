@@ -5,6 +5,24 @@
 #include <iterator>
 
 
+int generate_check_point(double mean,int seed){
+    // create a random number engine
+    std::mt19937 rng(seed);
+
+    // create a normal distribution with the desired mean and standard deviation 1
+    std::normal_distribution<double> normal_dist(mean, mean/10);
+
+    // generate and print 10 random numbers from the normal distribution
+    // for (int i = 0; i < 10; i++) {
+    //     double rand_num = normal_dist(rng);
+    //     rand_num = std::round(rand_num / 4.0) * 4.0;  // round to the nearest multiple of 4
+    //     std::cout << rand_num << " ";
+    // }
+    //std::cout << std::endl;
+    double rand_num = normal_dist(rng);
+    rand_num = std::round(rand_num / 4.0) * 4.0;
+    return (int) rand_num;
+}
 
 int main(int argc, char** argv)
 {
@@ -32,6 +50,7 @@ int main(int argc, char** argv)
     ofstream log_file(PATH+ "_0.log");
     // ofstream log_from_checkpoint(PATH+"_check_0.log");
     bool status = true;
+    checkpoint = generate_check_point(checkpoint,0); //new
     status = GF(max_n, g, result,log_file,checkpoint);
     log_file.close();
     //start looping
@@ -42,6 +61,7 @@ int main(int argc, char** argv)
         ss <<"_" << i << ".log";
         ofstream log_file(PATH + ss.str());
         ofstream log_from_checkpoint(PATH+"_check" + ss.str());
+        checkpoint = generate_check_point(checkpoint,i); //new
         status = GF(max_n, g, temp,log_file,checkpoint);
         if (temp.size() < result.size())
         {

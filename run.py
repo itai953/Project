@@ -30,11 +30,11 @@ max_nodes = {
     "29": "20812",
     "30": "29784"
 }
-
-NUM_ITERATIONS = 10000
+check_points = [int(value * 0.72) for value in max_nodes.values()]
+NUM_ITERATIONS = 500
 
 for g in max_nodes:
     if g == "26":
         break
     os.mkdir(f"./results/exp_g{g}")
-    subprocess.call(["./main.exe",g,max_nodes[g],str(NUM_ITERATIONS),f"results/exp_g{g}/log"]) 
+    subprocess.call(["./main.exe",g,int(max_nodes[g]*1.2/4)*4,str(NUM_ITERATIONS),check_points[g],f"results/exp_g{g}/log"]) 
