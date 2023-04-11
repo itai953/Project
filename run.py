@@ -1,4 +1,4 @@
-import subprocess 
+import subprocess
 import os
 
 max_nodes = {
@@ -30,11 +30,14 @@ max_nodes = {
     "29": "20812",
     "30": "29784"
 }
-check_points = [int(value * 0.72) for value in max_nodes.values()]
-NUM_ITERATIONS = 500
+check_points = [int(int(value) * 0.7) for value in max_nodes.values()]
+NUM_ITERATIONS = 1
 
-for g in max_nodes:
+for g in [str(i) for i in range(15,18)]:
     if g == "26":
         break
-    os.mkdir(f"./results/exp_g{g}")
-    subprocess.call(["./main.exe",g,int(max_nodes[g]*1.2/4)*4,str(NUM_ITERATIONS),check_points[g],f"results/exp_g{g}/log"]) 
+    try:
+        os.mkdir(f"./results/exp_g{g}")
+    except:
+        pass
+    subprocess.call(["./main.exe",g,str((int(max_nodes[g])*1.2/4)*4),str(NUM_ITERATIONS),str(check_points[int(g) - 5]),f"./results/exp_g{g}/log"])
