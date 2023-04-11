@@ -3,6 +3,9 @@
 
 #include <sstream>
 #include <iterator>
+#include <chrono>
+
+using namespace chrono;
 
 
 int generate_check_point(double mean,int seed){
@@ -10,7 +13,7 @@ int generate_check_point(double mean,int seed){
     std::mt19937 rng(seed);
 
     // create a normal distribution with the desired mean and standard deviation 1
-    std::normal_distribution<double> normal_dist(mean, mean/10);
+    std::normal_distribution<double> normal_dist(mean, 12);
 
     // generate and print 10 random numbers from the normal distribution
     // for (int i = 0; i < 10; i++) {
@@ -48,11 +51,15 @@ int main(int argc, char** argv)
     string PATH = string(argv[5]);
     srand(0); // add seed 0
     ofstream log_file(PATH+ "_0.log");
-    // ofstream log_from_checkpoint(PATH+"_check_0.log");
     bool status = true;
     checkpoint = generate_check_point(checkpoint,0); //new
+    auto start = high_resolution_clock::now();
     status = GF(max_n, g, result,log_file,checkpoint);
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<seconds>(stop - start);
+    log_file << "duration: " << duration.count();
     log_file.close();
+    int best_iter = 0;
     //start looping
     for(int i = 1; i < num_iterations; i++ )
     {
@@ -60,12 +67,16 @@ int main(int argc, char** argv)
         stringstream ss;
         ss <<"_" << i << ".log";
         ofstream log_file(PATH + ss.str());
-        ofstream log_from_checkpoint(PATH+"_check" + ss.str());
         checkpoint = generate_check_point(checkpoint,i); //new
+        start = high_resolution_clock::now();
         status = GF(max_n, g, temp,log_file,checkpoint);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<seconds>(stop - start);
+        log_file << "duration: " << duration.count();
         if (temp.size() < result.size())
         {
             result = temp;
+            best_iter = i;
         }
         log_file.close();
     }
@@ -74,6 +85,7 @@ int main(int argc, char** argv)
         ofstream output(PATH + "_result.txt");
         // output << "result graph:\n";
         output << result;
+        output << "\niteration: " << best_iter << endl;
         output.close();
     }
     return 0;
