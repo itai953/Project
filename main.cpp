@@ -54,12 +54,13 @@ int main(int argc, char** argv)
     bool status = true;
     checkpoint = generate_check_point(checkpoint,0); //new
     auto start = high_resolution_clock::now();
-    status = GF(max_n, g, result,log_file,checkpoint);
+    status = GF(0xFFFFFFFF, g, result,log_file,checkpoint);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<seconds>(stop - start);
     log_file << "duration: " << duration.count();
     log_file.close();
     int best_iter = 0;
+    bool success = false;
     //start looping
     for(int i = 1; i < num_iterations; i++ )
     {
@@ -73,10 +74,11 @@ int main(int argc, char** argv)
         stop = high_resolution_clock::now();
         duration = duration_cast<seconds>(stop - start);
         log_file << "duration: " << duration.count();
-        if (temp.size() < result.size())
+        if (status && (temp.size() < result.size()))
         {
             result = temp;
             best_iter = i;
+            success = true;
         }
         log_file.close();
     }
