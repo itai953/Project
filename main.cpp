@@ -52,9 +52,10 @@ int main(int argc, char** argv)
     srand(0); // add seed 0
     ofstream log_file(PATH+ "_0.log");
     bool status = true;
-    checkpoint = generate_check_point(checkpoint,0); //new
+    double const_checkpoint = checkpoint;
+    checkpoint = generate_check_point(const_checkpoint,0); //new
     auto start = high_resolution_clock::now();
-    status = GF(0xFFFFFFFF, g, result,log_file,checkpoint);
+    status = GF(INT_MAX, g, result,log_file,checkpoint);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<seconds>(stop - start);
     log_file << "duration: " << duration.count();
@@ -68,7 +69,7 @@ int main(int argc, char** argv)
         stringstream ss;
         ss <<"_" << i << ".log";
         ofstream log_file(PATH + ss.str());
-        checkpoint = generate_check_point(checkpoint,i); //new
+        checkpoint = generate_check_point(const_checkpoint,i); //new
         start = high_resolution_clock::now();
         status = GF(max_n, g, temp,log_file,checkpoint);
         stop = high_resolution_clock::now();
@@ -82,7 +83,7 @@ int main(int argc, char** argv)
         }
         log_file.close();
     }
-    if(status)
+    if(success)
     {
         ofstream output(PATH + "_result.txt");
         // output << "result graph:\n";
