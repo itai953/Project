@@ -286,7 +286,7 @@ bool climb_G_from_checkpoint(int max_n,int g,Graph& G,ofstream& log_check){
     return false;  
 }
 
-bool GF(int max_n, int g, Graph& result, ofstream& log, int checkpoint)
+bool GF(int max_n, int g, Graph& result, ofstream& log, int checkpoint, bool doHC=true)
 {
     Graph G; //construct k4m;
     int n = G.size();
@@ -294,7 +294,7 @@ bool GF(int max_n, int g, Graph& result, ofstream& log, int checkpoint)
     bool status = true;
     while(n <= max_n)
     {
-        if(n == checkpoint)
+        if(n == checkpoint && doHC)
         {
             status = climb_G_from_checkpoint(max_n,g,G,log);
             if (status)
@@ -305,7 +305,7 @@ bool GF(int max_n, int g, Graph& result, ofstream& log, int checkpoint)
         int max_walks[g];
         vector<Edge> max_walks_edges = find_max_walks_edges(G, max_walks, g,walks_vec);
         log_interval = (n/log_interval >= 10) ? log_interval*2 : log_interval;
-        if((n % log_interval) == 4)
+        if((n % log_interval) == 4 || n >= checkpoint)
         {
             writeData(walks_vec, walks_vec.size(), g, log, n);
         }

@@ -51,11 +51,12 @@ int main(int argc, char** argv)
     string PATH = string(argv[5]);
     srand(0); // add seed 0
     ofstream log_file(PATH+ "_0.log");
+    bool doHC = find(args.begin(), args.end(), "-GF") == args.end()? false: true;
     bool status = true;
     double const_checkpoint = checkpoint;
     checkpoint = generate_check_point(const_checkpoint,0); //new
     auto start = high_resolution_clock::now();
-    status = GF(INT_MAX, g, result,log_file,checkpoint);
+    status = GF(INT_MAX, g, result,log_file,checkpoint,doHC);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<seconds>(stop - start);
     log_file << "duration: " << duration.count();
@@ -71,7 +72,7 @@ int main(int argc, char** argv)
         ofstream log_file(PATH + ss.str());
         checkpoint = generate_check_point(const_checkpoint,i); //new
         start = high_resolution_clock::now();
-        status = GF(max_n, g, temp,log_file,checkpoint);
+        status = GF(max_n, g, temp,log_file,checkpoint, doHC);
         stop = high_resolution_clock::now();
         duration = duration_cast<seconds>(stop - start);
         log_file << "duration: " << duration.count();
