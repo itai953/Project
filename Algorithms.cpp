@@ -286,7 +286,7 @@ bool climb_G_from_checkpoint(int max_n,int g,Graph& G,ofstream& log_check){
     return false;  
 }
 
-bool GF(int max_n, int g, Graph& result, ofstream& log, int checkpoint, bool doHC=true)
+bool GF(int max_n, int g, Graph& result, ofstream& log, int checkpoint, bool doHC)
 {
     Graph G; //construct k4m;
     int n = G.size();
