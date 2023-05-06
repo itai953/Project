@@ -5,7 +5,7 @@
 #include <climits>
 
 using std::min;
-typedef std::pair<int, int> Edge;
+
 
 void rand_perm(vector<Edge> &v);
 int add_two_mid(Graph& G, Edge& e);

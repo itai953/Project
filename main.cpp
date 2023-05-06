@@ -84,9 +84,15 @@ int main(int argc, char** argv)
         }
         log_file.close();
     }
-    if(success)
+    ofstream output(PATH + "_result.txt");
+    if(!result.is_k4m_graph(result.size(), g))
     {
-        ofstream output(PATH + "_result.txt");
+        output << "ERROR: invalid result\n";
+        output.close();
+        return 1;
+    }
+    if(success || (status && num_iterations == 1))
+    {
         // output << "result graph:\n";
         output << result;
         output << "\niteration: " << best_iter << endl;
