@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     string PATH = string(argv[5]);
     srand(0); // add seed 0
     ofstream log_file(PATH+ "_0.log");
-    bool doHC = find(args.begin(), args.end(), "-GF") == args.end()? false: true;
+    bool doHC = find(args.begin(), args.end(), "-GF") == args.end()? true: false;
     bool status = true;
     double const_checkpoint = checkpoint;
     checkpoint = generate_check_point(const_checkpoint,0); //new
